@@ -1,18 +1,70 @@
-# This .gitignore is appropriate for repositories deployed to GitHub Pages and using
-# a Gemfile as specified at https://github.com/github/pages-gem#conventional
+ # task_manager.py
 
-# Basic Jekyll gitignores (synchronize to Jekyll.gitignore)
-_site/
-.sass-cache/
-.jekyll-cache/
-.jekyll-metadata
+class Task:
+    def __init__(self, title, description):
+        self.title = title
+        self.description = description
+        self.completed = False
 
-# Additional Ruby/bundler ignore for when you run: bundle install
-/vendor
+    def mark_completed(self):
+        self.completed = True
 
-# Specific ignore for GitHub Pages
-# GitHub Pages will always use its own deployed version of pages-gem 
-# This means GitHub Pages will NOT use your Gemfile.lock and therefore it is
-# counterproductive to check this file into the repository.
-# Details at https://github.com/github/pages-gem/issues/768
-Gemfile.lock
+    def __str__(self):
+        status = "Completed" if self.completed else "Pending"
+        return f"Task: {self.title} | Status: {status}\nDescription: {self.description}"
+
+
+class TaskManager:
+    def __init__(self):
+        self.tasks = []
+
+    def add_task(self, title, description):
+        task = Task(title, description)
+        self.tasks.append(task)
+        print(f"Task '{title}' added!")
+
+    def view_tasks(self):
+        if not self.tasks:
+            print("No tasks available.")
+        for task in self.tasks:
+            print(task)
+            print("-" * 50)
+
+    def mark_task_completed(self, title):
+        task = next((task for task in self.tasks if task.title == title), None)
+        if task:
+            task.mark_completed()
+            print(f"Task '{title}' marked as completed!")
+        else:
+            print(f"Task '{title}' not found.")
+
+
+def main():
+    task_manager = TaskManager()
+
+    while True:
+        print("Task Manager")
+        print("1. Add Task")
+        print("2. View Tasks")
+        print("3. Mark Task Completed")
+        print("4. Exit")
+        choice = input("Choose an option: ")
+
+        if choice == "1":
+            title = input("Enter task title: ")
+            description = input("Enter task description: ")
+            task_manager.add_task(title, description)
+        elif choice == "2":
+            task_manager.view_tasks()
+        elif choice == "3":
+            title = input("Enter the title of the task to mark as completed: ")
+            task_manager.mark_task_completed(title)
+        elif choice == "4":
+            print("Exiting Task Manager. Goodbye!")
+            break
+        else:
+            print("Invalid choice, please try again.")
+
+
+if __name__ == "__main__":
+    main()
